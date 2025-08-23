@@ -1,0 +1,45 @@
+# test nwc's filelist from stdin usecase
+# reference: https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript
+
+# initialize non-empty sink
+exec touch sink_wc.out
+exec echo "junk_for_wc"
+cp stdout sink_wc.out
+
+# initialize non-empty sink...
+exec touch sink_nwc.out
+exec echo "junk_for_nwc"
+cp stdout sink_nwc.out
+
+exec touch file1.txt
+exec echo "content inside file1"
+cp stdout file1.txt
+
+exec touch file2.txt
+exec echo "content inside file2"
+cp stdout file2.txt
+
+exec touch file3.txt
+exec echo "content inside file3"
+cp stdout file3.txt
+
+# create nul terminated filelist manually to be piped...
+exec touch filelist.list
+exec find . -name '*.txt' -print0 #this one way seemed to work _only_ ?
+cp stdout filelist.list
+
+# run wc
+stdin filelist.list
+exec wc -cmlLw --total=always --files0-from=-
+cp stdout sink_wc.out
+
+# run nwc
+stdin filelist.list
+exec nwc-program -c -m -l -L -w -t -f=-
+cp stdout sink_nwc.out
+
+# loose compare since we don't aim for verbatim whitespace match...
+exec diff --ignore-all-space --ignore-blank-lines sink_wc.out sink_nwc.out
+
+#exec ls
+#env
