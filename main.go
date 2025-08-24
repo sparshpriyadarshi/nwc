@@ -13,7 +13,9 @@ import (
 const VERSION = "0.1.0"
 const PROGRAM_NAME = "nwc"
 const USAGE_TEMPLATE = `Print newline, word and byte counts for files and more. 
-If no file is specified, standard input is processed.
+
+If no file is specified, standard input is processed. 
+Order of values is: lines, words, chars, bytes, max-line-length;
 
 Usage:
 	%s [flags] [path ...]
